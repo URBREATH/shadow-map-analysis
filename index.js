@@ -2650,25 +2650,14 @@ da.now = (t, e) => {
     return d >= n && d <= o && !(d === n && g.minute() < A.minute()) && !(d === o && g.minute() > r.minute());
   });
 }, da.version = "7.11.0", da.plugin = da.extend;
-async function SQ(t, e) {
-  if (!(t.maps.activeMap instanceof mc))
-    return Promise.reject();
-  const A = new Ap({
-    cameraPosition: e,
-    // Berlin, 1km altitude
-    pitch: -90,
-    heading: 0
-  });
-  return await t.maps.activeMap.gotoViewpoint(A), t.maps.activeMap.getScene().render(), A;
-}
-function MQ(t) {
+function SQ(t) {
   const e = Array.from(t.layers);
   let A = [];
   return e.forEach((r) => {
     (r.className === "WMTSLayer" || r.className === "WMSLayer" || r.className === "TMSLayer" || r.className === "OpenStreetMapLayer" || r.className === "SingleImageLayer") && r.active && (r.deactivate(), A.push(r));
   }), A;
 }
-function UQ(t, e) {
+function MQ(t, e) {
   e.forEach((A) => {
     A.activate();
   });
@@ -2679,14 +2668,14 @@ function Hv(t, e) {
   const r = t.maps.activeMap.getScene(), n = r.globe, o = _1.fromCssColorString(e), c = r.globe.baseColor.toCssHexString();
   return n.baseColor = o, c;
 }
-function DQ(t) {
+function UQ(t) {
   const e = Array.from(t.layers);
   let A = [];
   return e.forEach((r) => {
     (r.className === "CesiumTilesetLayer" || r.className === "PointCloudLayer" || r.className === "VectorTileLayer" || r.className === "WFSLayer" || r.className === "GeoJSONLayer" || r.className === "FlatGeobufLayer") && A.push(r.name);
   }), A;
 }
-function TQ(t) {
+function DQ(t) {
   if (!(t.maps.activeMap instanceof mc))
     return new Uint8Array(0);
   const e = t.maps.activeMap;
@@ -2708,13 +2697,13 @@ function TQ(t) {
     g
   ), d.bindFramebuffer(d.FRAMEBUFFER, null), g;
 }
-function kQ(t, e) {
+function TQ(t, e) {
   const A = Math.min(t.length, e.length), r = new Uint8Array(A);
   for (let n = 0; n < A; n++)
     r[n] = Math.max(0, t[n] - e[n]);
   return r;
 }
-async function LQ(t, e, A) {
+async function kQ(t, e, A) {
   if (!(t.maps.activeMap instanceof mc))
     return Promise.reject();
   const r = new DI(), n = e[0].map((Ge) => {
@@ -2783,7 +2772,7 @@ async function LQ(t, e, A) {
     O.maxX - O.minX,
     O.maxY - O.minY
   );
-  const pe = Y.toDataURL("image/png"), he = kQ(A, B), W = document.createElement("canvas");
+  const pe = Y.toDataURL("image/png"), he = TQ(A, B), W = document.createElement("canvas");
   W.width = d, W.height = p;
   const ve = W.getContext("2d"), Te = ve.createImageData(d, p), ee = new Uint8Array(d * p * 4);
   for (let Ge = 0; Ge < p; Ge++) {
@@ -2832,7 +2821,7 @@ async function LQ(t, e, A) {
   const De = me[Math.floor(me.length / 2)];
   for (let Ge = 0; Ge < oe.length; Ge += 4) {
     const vt = Ge / 4 % Xe, Ve = Math.floor(Ge / 4 / Xe), fe = Fe + vt, Tt = Le + Ve;
-    NQ({ x: fe, y: Tt }, le) && (xe++, oe[Ge] - De > 4 ? ce++ : Ie++);
+    PQ({ x: fe, y: Tt }, le) && (xe++, oe[Ge] - De > 4 ? ce++ : Ie++);
   }
   const He = document.createElement("canvas");
   He.width = Xe, He.height = Z;
@@ -2863,7 +2852,7 @@ async function LQ(t, e, A) {
     pixelArray: tt
   };
 }
-function PQ(t, e = 9, A = 15) {
+function LQ(t, e = 9, A = 15) {
   console.log(
     `Analyzing sunny areas between ${e}:00 and ${A}:00`
   );
@@ -2999,7 +2988,7 @@ function PQ(t, e = 9, A = 15) {
     canvasHeight: N
   };
 }
-function NQ(t, e) {
+function PQ(t, e) {
   let A = !1;
   for (let r = 0, n = e.length - 1; r < e.length; n = r++) {
     const o = e[r].x, c = e[r].y, g = e[n].x, d = e[n].y;
@@ -3007,12 +2996,13 @@ function NQ(t, e) {
   }
   return A;
 }
-function HQ(t, e) {
-  t.camera.frustum.fovy;
-  const r = e.getGeometry().getCoordinates()[0].map((F) => F[2] || 0), n = r.reduce((F, I) => F + I, 0) / (r.length || 1), [o, c, g, d] = e.getGeometry().getExtent(), p = g - o, B = d - c, C = Math.sqrt(p ** 2 + B ** 2);
-  return n + C;
+function NQ(t, e) {
+  const A = t.camera.frustum.fovy, n = e.getGeometry().getCoordinates()[0].map((P) => P[2] || 0), o = n.reduce((P, Y) => P + Y, 0) / (n.length || 1), [c, g, d, p] = e.getGeometry().getExtent(), B = d - c, C = p - g, F = Math.sqrt(B ** 2 + C ** 2), T = F / 2 / Math.tan(A / 2) + o;
+  return console.log(
+    `Calculated camera distance: ${T.toFixed(2)}, meanZ: ${o.toFixed(2)}, diagonal: ${F.toFixed(2)}, calc. distance: ${(o + F).toFixed(2)}`
+  ), T;
 }
-function RQ(t, e, A) {
+function HQ(t, e, A) {
   console.log(
     `Calculating sunrise/sunset for ${t.toISOString().split("T")[0]} at ${A}°N, ${e}°E`
   );
@@ -3082,6 +3072,18 @@ function wd(t, e, A) {
   const r = t.maps.activeMap, n = r.getScene(), { shadowMap: o } = r.getScene(), c = t.maps.activeMap.getCesiumWidget(), { clock: g } = c;
   g.currentTime = e, o && A ? (o.darkness = 0.01, o.fadingEnabled = !1, o.enabled = !0, n.render()) : (o.enabled = !1, n.render());
 }
+async function RQ(t, e, A) {
+  if (!(t.maps.activeMap instanceof mc))
+    return Promise.reject();
+  const r = new Ap({
+    cameraPosition: [e[0], e[1], A],
+    // Berlin, 1km altitude
+    groundPosition: e,
+    pitch: -90,
+    heading: 0
+  });
+  return await t.maps.activeMap.gotoViewpoint(r), t.maps.activeMap.getScene().render(), r;
+}
 async function OQ(t, e, A, r = null, n = void 0, o = 30) {
   var Z, oe, de;
   console.log(e), console.log(A);
@@ -3091,21 +3093,20 @@ async function OQ(t, e, A, r = null, n = void 0, o = 30) {
     createTopPlane: !1,
     createVerticalPlanes: !0,
     reverse: !0
-  }), g = DQ(t), d = new QI({
+  }), g = UQ(t), d = new QI({
     clippingPlaneCollection: c,
     layerNames: g,
     local: !1,
     terrain: !1
   }), { clippingObjectManager: p } = t.maps;
   p.addClippingObject(d);
-  const B = t.maps.activeMap.getCesiumWidget(), C = HQ(B, A);
-  r || (r = await t.maps.activeMap.getViewpoint()), r = await SQ(t, [
-    r == null ? void 0 : r.groundPosition[0],
-    r == null ? void 0 : r.groundPosition[1],
-    C * 0.9
-    // * 0.25, //* 0.9, // * 1.2,
-  ]), t.maps.activeMap.getScene().render();
-  const F = Hv(t, "#FFFFFF"), I = MQ(t), T = [], P = [];
+  const B = t.maps.activeMap.getCesiumWidget(), C = NQ(B, A);
+  r || (r = await t.maps.activeMap.getViewpoint()), r = await RQ(
+    t,
+    [r == null ? void 0 : r.groundPosition[0], r == null ? void 0 : r.groundPosition[1], r == null ? void 0 : r.groundPosition[2]],
+    C
+  ), t.maps.activeMap.getScene().render();
+  const F = Hv(t, "#FFFFFF"), I = SQ(t), T = [], P = [];
   t.maps.activeMap.getScene().render();
   const Y = new Date(e);
   Y.setUTCHours(0, 0, 0, 0), new Date(Y).setUTCHours(23, 59, 59, 999);
@@ -3118,7 +3119,7 @@ async function OQ(t, e, A, r = null, n = void 0, o = 30) {
     sunsetLocal: he,
     timezoneOffset: W,
     timezone: ve
-  } = RQ(Y, X, ie);
+  } = HQ(Y, X, ie);
   console.log(`Analysis date: ${e}`), console.log(`Location: ${ie}°N, ${X}°E`), console.log(
     `Sunrise UTC: ${UA.toIso8601(le)} (${UA.toDate(le).toLocaleTimeString()})`
   ), console.log(
@@ -3161,7 +3162,7 @@ async function OQ(t, e, A, r = null, n = void 0, o = 30) {
   for (let ge = 0; ge < ee.length; ge++) {
     const me = ee[ge];
     Ce.currentTime = me, await new Promise((He) => requestAnimationFrame(He));
-    const De = await TQ(t);
+    const De = await DQ(t);
     T.push(De), console.log(
       `Generated base map ${ge + 1}/${ee.length} at ${UA.toDate(me).toLocaleTimeString()}`
     );
@@ -3176,15 +3177,15 @@ async function OQ(t, e, A, r = null, n = void 0, o = 30) {
     console.log(
       `[${He}] Analyzing shadows at ${De} (sun is up)`
     );
-    const Re = await LQ(
+    const Re = await kQ(
       t,
       (de = A.getGeometry()) == null ? void 0 : de.getCoordinates(),
       T[ge]
     );
     P.push(Re);
   }
-  p.removeClippingObject(d), UQ(t, I), Hv(t, F), wd(t, Le, !1), console.log("Shadow KPIs:", P);
-  const Xe = PQ(P, 9, 15);
+  p.removeClippingObject(d), MQ(t, I), Hv(t, F), wd(t, Le, !1), console.log("Shadow KPIs:", P);
+  const Xe = LQ(P, 9, 15);
   return console.log(`${Xe.sunnyRatio * 100}% of the area is always sunny`), console.log("Sunny area analysis:", Xe), {
     shadowResults: P,
     sunnyAreaAnalysis: Xe,
